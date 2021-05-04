@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProperty name="charset" source="file.encoding" defaultValue="UTF-8"/>
+    <springProperty name="CONSOLE_LOG_CHARSET" source="file.encoding" defaultValue="UTF-8"/>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+    <appender name="RollingFile"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>${charset}</charset>
+        </encoder>
+        <file>${LOG_PATH}/${LOG_FILE}.log</file>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- "%d{yyyy-MM-dd}" in <fileNamePattern> implies a daily rollover (http://logback.qos.ch/manual/appenders.html#TimeBasedRollingPolicy)-->
+            <fileNamePattern>${LOG_PATH}/log/%d{yyyy-MM-dd}-${LOG_FILE}.log</fileNamePattern>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+
+    <!-- LOG everything at INFO level -->
+    <root level="info">
+        <appender-ref ref="RollingFile" />
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+    <logger name="fr.insee.eno.ws" level="info" additivity="false">
+        <appender-ref ref="RollingFile" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+</configuration>
